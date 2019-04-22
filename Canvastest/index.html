@@ -1,0 +1,190 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>title</title>
+    <style>
+        #canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+        <canvas id="canvas" width="400" height="400"></canvas>
+        <script>
+            var canvas = document.getElementById("canvas");
+            var context = canvas.getContext("2d");
+
+            context.beginPath();
+            context.arc(100, 100, 50, 0, Math.PI*2, true);
+            context.closePath();
+            context.fillStyle = 'rgb(255, 255, 255)';
+            context.fill();
+        </script>
+</body>
+<!-- </html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>canvas</title>
+    <style>
+        /* #canvas{
+            background: #000;
+        }
+        .filter {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: #fe5757;
+            animation: colorChange 30s ease-in-out infinite;
+            animation-fill-mode: both;
+            mix-blend-mode: overlay;
+        }
+
+        @keyframes colorChange {
+            0%, 100% {
+                opacity: 0;
+            }
+            50% {
+                opacity: .9;
+            }
+        } */
+        *{
+            padding: 0;
+            margin: 0;
+        }
+
+        #canvas{
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+        <canvas id="canvas" ></canvas>
+        <script>
+            var canvas = document.getElementById("canvas"),
+            ctx = canvas.getContext("2d"),
+            WIDTH = canvas.width = document.documentElement.clientWidth,
+            HEIGHT = canvas.height = document.documentElement.clientHeight,
+            para = {
+                num: 100,
+                color: false,//颜色，如果是false 则是随机渐变颜色
+                r: 0.9, //圆每次增加的半径
+                o: 0.09,//判断圆消失的条件，数值越大，消失的越快
+                a: 1
+            },
+            color,
+            color2,
+            round_arr = [];  //存圆的数组
+
+            window.onmousemove = function (event){
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+
+                round_arr.push({
+                    mouseX: mouseX,
+                    mouseY: mouseY,
+                    r: para.r, //设置半径每次增大的数值
+                    o: 1,   //判断圆消失的条件，数值越大，消失得越快
+                })
+            };
+
+            //判断参数中是否设置了color,如果设置了color,就使用该值
+            //如果参数中的color为false,那么就使用随机的颜色
+            if(para.color){
+                color2 = para.color;
+            }else{
+                color = Math.random() * 360;
+            }
+
+            function animate(){
+
+                if(!para.color) {
+                    color += 0.1;
+                    color2 = 'hsl(' + color + ',100%,80%)';
+                }
+
+                ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+                for(var i = 0; i < round_arr.length; i++){
+                    ctx.fillstyle = color2;
+                    ctx.beginPath();
+                    ctx.arc(round_arr[i].mouseX, round_arr[i].mouseY, round_arr[i].r, 0, Math.PI);
+                    ctx.closePath();
+                    ctx.fill();
+                    round_arr[i].r += para.r;
+                    round_arr[i].o -= para.o;
+
+                    if( round_arr[i].o <= 0){
+                        round_arr.splice(i, 1);
+                        i--;
+                    }
+                }
+                window.requestAnimationFrame(animate);
+            };
+
+            animate();
+
+            // context.beginPath();//起始一个路径，或重置当前路径
+            // context.arc(100, 100, 50, 0, Math.PI*0.5, false);//创建弧、曲线
+            // context.closePath();//创建从当前点回到起始点的路径
+            // context.fillStyle = 'rgb(255, 255, 255)';//设置或返回用于填充绘画的颜色，渐变或模式
+            // context.fill();//填充当前绘图
+
+            // context.moveTo(10,10);
+            // context.lineTo(100, 100);
+            // context.lineWidth = 10;
+            // context.lineCap = 'round';
+            // context.strokeStyle = "white";
+            // context.stroke();
+
+            //带阴影模糊效果
+            // context.beginPath();
+            // context.arc(100,100,50,0,2*Math.PI,false);
+            // context.fillStyle = '#fff';
+            // context.shadowBlur = 20;
+            // context.shadowColor = '#fff';
+            // context.fill()
+
+            //设置渐变
+            // var grd = context.createLinearGradient(100,100,100,200);
+            // grd.addColorStop(0,'pink');//添加渐变的颜色 0 代表位置，(0-1)
+            // grd.addColorStop(1,'white');//
+
+            // context.fillStyle = grd;
+            // context.fillRect(100,100,200,200);
+            //彩虹
+            // var grd = context.createLinearGradient(0,0,0,400);
+            // grd.addColorStop(0,'rgb(255, 0, 0)');
+            // grd.addColorStop(0.2,'rgb(255, 165, 0)');
+            // grd.addColorStop(0.3,'rgb(255, 255, 0)');
+            // grd.addColorStop(0.5,'rgb(0, 255, 0)');
+            // grd.addColorStop(0.7,'rgb(0, 127, 255)');
+            // grd.addColorStop(0.9,'rgb(0, 0, 255)');
+            // grd.addColorStop(1,'rgb(139, 0, 255)');
+
+            // context.fillStyle = grd;
+            // context.fillRect(0,0,400,400);
+
+            //缩放
+            // context.strokeStyle = 'white';
+            // context.strokeRect(5, 5, 50, 25);
+            // context.scale(2, 2);
+            // context.strokeRect(5, 5, 50, 25);
+            // context.scale(2, 2);
+            // context.strokeRect(5, 5, 50, 25);
+
+            //旋转
+            // context.fillStyle = 'white';
+            // context.rotate(20*Math.PI / 180);
+            // context.fillRect(70, 30, 200, 100);
+        </script>
+</body>
+</html>
